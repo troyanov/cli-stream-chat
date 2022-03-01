@@ -7,11 +7,12 @@ import (
 	"strings"
 	"sync"
 
+	"cli-stream-chat/pkg/msg"
 	"cli-stream-chat/pkg/pipe"
 	"cli-stream-chat/pkg/provider"
 )
 
-func runListeners(twitch string, youtubeLink string, pipes pipe.Pipes, ch pipe.MsgStream) {
+func runListeners(twitch string, youtubeLink string, pipes pipe.Pipes, ch msg.MsgStream) {
 	var wg sync.WaitGroup
 
 	if twitch != "" {
@@ -30,7 +31,7 @@ func runListeners(twitch string, youtubeLink string, pipes pipe.Pipes, ch pipe.M
 	close(ch)
 }
 
-func listenStream(ch pipe.MsgStream, pipes pipe.Pipes) {
+func listenStream(ch msg.MsgStream, pipes pipe.Pipes) {
 	for msg := range ch {
 		pipe.WriteAll(pipes, msg)
 	}
@@ -61,7 +62,7 @@ func main() {
 		}
 	}
 
-	msgStream := make(chan pipe.Message)
+	msgStream := make(chan msg.Message)
 	go listenStream(msgStream, pipes)
 	runListeners(*twitch, *youtubeLink, pipes, msgStream)
 }

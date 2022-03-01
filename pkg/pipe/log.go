@@ -1,6 +1,7 @@
 package pipe
 
 import (
+	"cli-stream-chat/pkg/msg"
 	"fmt"
 	"os"
 	"time"
@@ -19,7 +20,7 @@ func (s *Log) fullpath() string {
 	return s.Path + "/" + s.filename()
 }
 
-func (s *Log) Write(msg Message) {
+func (s *Log) Write(msg msg.Message) {
 	file, err := getOrCreateFile(s.fullpath())
 	defer file.Close()
 	if err != nil {

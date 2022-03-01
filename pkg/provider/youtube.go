@@ -4,14 +4,16 @@ import (
 	"fmt"
 	"sync"
 
+	"cli-stream-chat/pkg/msg"
 	"cli-stream-chat/pkg/pipe"
+	"cli-stream-chat/pkg/platform"
 
 	"github.com/abhinavxd/youtube-live-chat-downloader/v2"
 )
 
 type Youtube struct{}
 
-func (y *Youtube) Listen(wg *sync.WaitGroup, streamLink string, pipes pipe.Pipes, ch pipe.MsgStream) {
+func (y *Youtube) Listen(wg *sync.WaitGroup, streamLink string, pipes pipe.Pipes, ch msg.MsgStream) {
 	continuation, cfg, error := YtChat.ParseInitialData(streamLink)
 	if error != nil {
 		fmt.Println("error youtube", error)
@@ -23,8 +25,12 @@ func (y *Youtube) Listen(wg *sync.WaitGroup, streamLink string, pipes pipe.Pipes
 			continue
 		}
 		continuation = newContinuation
-		for _, msg := range chat {
-			ch <- pipe.Message{Nickname: msg.AuthorName, Text: msg.Message, Platform: pipe.YoutubePlatform}
+		for _, m := range chat {
+			ch <- msg.Message{
+				Nickname: m.AuthorName,
+				Text:     m.Message,
+				Platform: platform.YoutubePlatform,
+			}
 		}
 	}
 }

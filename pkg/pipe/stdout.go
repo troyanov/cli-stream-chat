@@ -1,9 +1,12 @@
 package pipe
 
-import "fmt"
+import (
+	"cli-stream-chat/pkg/msg"
+	"fmt"
+)
 
 type Stdout struct{}
 
-func (s *Stdout) Write(msg Message) {
+func (s *Stdout) Write(msg msg.Message) {
 	fmt.Println(msg.ColorizedText())
 }
